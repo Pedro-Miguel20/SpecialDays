@@ -1,11 +1,27 @@
 <script setup>
-import { RouterLink, RouterView,useRoute } from 'vue-router'
+import { RouterLink, RouterView, useRoute } from 'vue-router';
 import SpecialDays from './components/Title.vue';
-import { computed } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 
 const route = useRoute();
-const routeKey = computed(() => route.fullPath); // Unique key per route
+const routeKey = computed(() => route.fullPath);
 const url = window.location.pathname;
+
+const iframeLoaded = ref(false);
+const startIrisOut = ref(false);
+
+const onIframeLoad = () => {
+  
+  setTimeout(() => {
+    startIrisOut.value = true;
+
+    // Then wait for the iris animation to complete before removing loader
+    setTimeout(() => {
+      iframeLoaded.value = true;
+    }, 2000); // match CSS transition time
+  }, 2000);
+  
+};
 </script>
 
 <template>
@@ -20,7 +36,14 @@ const url = window.location.pathname;
     </router-view>
     </div>
   </header>
-  <iframe v-if="url != '/one'" id="cake" src='https://my.spline.design/cakecopycopycopycopy-4aa638c68e179d4317c810c332b74e33/' frameborder='0' width='80%' height='100%'></iframe>
+
+  <!-- Loader Cover -->
+  <div v-if="!iframeLoaded && url != '/one'" :class="['loader-cover', { 'iris-out': startIrisOut }]">
+    <div class="spinner"></div>
+    <p v-if="!startIrisOut">Loading... Wait a sec</p>
+  </div>
+
+  <iframe v-if="url != '/one'" id="cake" src='https://my.spline.design/cakecopycopycopycopy-4aa638c68e179d4317c810c332b74e33/' frameborder='0' width='80%' height='100%' @load="onIframeLoad"></iframe>
   <svg v-if="url != '/one'" preserveAspectRatio="xMidYMid slice" id="svg" viewBox="10 10 80 80">
   <defs>
   <pattern id="img1" patternUnits="userSpaceOnUse" width="100" height="100">
@@ -41,11 +64,45 @@ const url = window.location.pathname;
 
 
 <style scoped>
-
-canvas > a{
+canvas > a {
   display: none;
 }
 
+.loader-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  clip-path: circle(150% at 50% 50%);
+  transition: clip-path 1s ease-in-out;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #9b5de5;
+  border-top: 5px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+.loader-cover.iris-out {
+  clip-path: circle(0% at 50% 50%);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 .bounce-enter-active {
   animation: bounce-in 0.5s;
@@ -53,6 +110,7 @@ canvas > a{
 .bounce-leave-active {
   animation: bounce-in 0.5s reverse;
 }
+
 @keyframes bounce-in {
   0% {
     transform: scale(0);

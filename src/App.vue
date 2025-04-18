@@ -20,7 +20,7 @@ const url = window.location.pathname;
     </router-view>
     </div>
   </header>
-  <iframe v-if="url != '/one'" id="cake" src='https://my.spline.design/cakecopycopycopycopy-4aa638c68e179d4317c810c332b74e33/' frameborder='0' width='80%' height='100%'></iframe>
+  <iframe v-if="url != '/one'" id="cake" src='https://my.spline.design/cakeproduction-hGBj5X11umLdG6ufU34QDZ3Q/' frameborder='0' width='80%' height='100%'></iframe>
   <svg v-if="url != '/one'" preserveAspectRatio="xMidYMid slice" id="svg" viewBox="10 10 80 80">
   <defs>
   <pattern id="img1" patternUnits="userSpaceOnUse" width="100" height="100">

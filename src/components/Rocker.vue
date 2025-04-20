@@ -6,8 +6,11 @@ import Bongo from "./Bongo.vue";
     
     <span id="perfect" :class="{ 'pop-animation': perfect !== '' }">{{ perfect }}</span>
     <div>
-      <button v-if="!gameStarted" v-on:click="startGame">You Play</button>
-      <div v-if="gameStarted" class="allwrapper">
+      <div class="piano-key">
+        <button v-if="!gameStarted && endgame === false" v-on:click="startGame" class="white-key">You Play</button>
+      </div>
+      
+      <div v-if="gameStarted && endgame === false" class="allwrapper">
       <Bongo style="top: -70px; position: relative;"></Bongo>
       <div id="game-container">
         <div class="notepath">
@@ -37,12 +40,27 @@ import Bongo from "./Bongo.vue";
       <!--<div class="life-bar">
         <div class="life" :style="{ width: life + '%' }"></div>
       </div>-->
-      <div v-if="endgame == true" class="wrapstats">
-        <div>
-          <h4 class="titlestats">{{ achieve }}</h4>
-          <span>{{ player }}</span><p>{{ points }} points</p>
-        </div>
       </div>
+      <div v-if="endgame" class="wrapstats">
+        <div class="wrappall">
+          <h4 class="titlestats">{{ achieve }}</h4>
+          <span></span><p>{{ points }} points</p>
+          
+          <button class="balloon-button" v-if="points > count/2 && !showGift" @click="openGift">Abra seu presente</button>
+
+    <!-- Mostrar o GIF do presente -->
+    <div v-if="showGift">
+      <img src="../assets/gift.gif" id="gift" />
+    </div>
+
+    <!-- Mostrar o conteúdo surpresa depois do tempo -->
+    <div v-if="showSurprise" style="position: absolute; bottom: 220px;">
+      <span style="color:darkslategray;">KKKKKKK ABRE AEPOXA</span>
+    </div>
+
+    <a href="/"><span style="color:darkslategray;">🔙Voltar</span></a>
+
+        </div>
     </div>
   </div>
   </template>
@@ -51,14 +69,18 @@ import Bongo from "./Bongo.vue";
   import song from '@/assets/parabens.mp3';
   import wrongnote from '@/assets/missedpiano.mp3';
   import { Midi } from '@tonejs/midi';
+  import { watch, ref } from "vue";
 
   export default {
+    emits: ['update'],
     data() {
       return {
         missed: new Audio(wrongnote),
         audio: new Audio(song),
         gameStarted: false,
         endgame: false,
+        showGift: false,
+        showSurprise: false,
         achieve: '',
         chart: [],
         activeNotes: [],
@@ -93,6 +115,7 @@ import Bongo from "./Bongo.vue";
     },
     mounted() {
       window.addEventListener("keydown", this.handleKeydown);
+      this.$emit('update', this.gameStarted);
     },
     beforeUnmount() {
       window.removeEventListener("keydown", this.handleKeydown);
@@ -101,11 +124,12 @@ import Bongo from "./Bongo.vue";
       startGame() {
         this.gameStarted = true;
 
+        this.$emit('update', this.gameStarted);
+        
         // Chamar loadMidi e aguardar o carregamento do arquivo MIDI antes de continuar
         this.loadMidi().then(() => {
           // Verificar se o chart está vazio após carregar o MIDI
           this.$nextTick(() => {
-            console.log('Chart data (cópia):', Array.from(this.chart)); // Verifique se a cópia do chart é válida
 
             if (this.chart.length > 0) {
               // Adicionar uma verificação para garantir que as notas sejam criadas no tempo certo
@@ -132,7 +156,15 @@ import Bongo from "./Bongo.vue";
           console.error('Erro ao carregar o arquivo MIDI:', error);
         });
       },
+      openGift() {
+      this.showGift = true;
 
+      // Tempo em milissegundos (ajuste conforme o tempo do seu gif)
+      setTimeout(() => {
+        this.showSurprise = true;
+      }, 3700); // 2 segundos
+      
+    },
       animatedConfetti() {
       const end = Date.now() + 15 * 1000;
 
@@ -214,13 +246,10 @@ import Bongo from "./Bongo.vue";
           }
 
           const midiData = await response.arrayBuffer();
-          console.log('Arquivo MIDI carregado:', midiData);
 
           // Usando @tonejs/midi para processar o arquivo MIDI
           const midi = new Midi(midiData);
           const notes = this.convertMidiToNotes(midi);
-
-          console.log("Notas convertidas: ", notes);
           this.chart = notes;
 
           return Promise.resolve();
@@ -240,7 +269,7 @@ import Bongo from "./Bongo.vue";
             69: "k", 71: "k", 
             72: "l", 74: "l"
         };
-        const positions = { a: 8, s: 72, d: 135, k: 200, l: 265 };
+        const positions = { a: 6, s: 69, d: 132, k: 196, l: 257};
         const colors = { a: "lightgreen", s: "crimson", d: "gold", k: "cornflowerblue", l: "tomato" };
 
         const bpm = midi.header.tempos[0]?.bpm || 120; // Pega o BPM do arquivo MIDI
@@ -288,7 +317,6 @@ import Bongo from "./Bongo.vue";
 
         // Verifique se o jogo deve acabar
         this.count++;
-        console.log(this.count)
         this.activeNotes.push(noteObj);
         this.animateNote(noteObj);
         
@@ -318,14 +346,13 @@ import Bongo from "./Bongo.vue";
     }, 15);
     if(this.count > this.chart.length) {
       setTimeout(() => {
-        this.endGame(); // Chama o método endGame
+        this.endGame(this.endgame); // Chama o método endGame
       }, 4000);
     };
 },
 
       endGame(){
         this.endgame = true;
-        console.log("Fim de jogo!");
         const victory = this.count / 2;
         if(victory < this.points){
           console.log("You rock!: " + this.points + " points");
@@ -400,11 +427,9 @@ import Bongo from "./Bongo.vue";
         setTimeout(() => {
           document.getElementById(keyPressed).style.transform = "scale(1)";
         }, 200);
-        console.log(this.key);
 
         if (note) {
           if (note.top > 410 && note.top < 470) {
-            console.log(this.top)
             this.points++;
             note.active = false;
             this.life = Math.min(this.life + 5, 100);
@@ -420,7 +445,6 @@ import Bongo from "./Bongo.vue";
               document.getElementById(keyPressed + "key").style.boxShadow = "none";
             }, 200);
             this.perfectHits += 1;
-            console.log(this.perfectHits);
             if (note.top > 440 && note.top <450) {
                     this.perfect = 'You rock!';
                     
@@ -474,17 +498,17 @@ background: linear-gradient(0deg, rgba(92,84,84,1) 0%, rgba(152,150,150,1) 100%)
     border-radius: 10px;
     overflow: hidden;
     transform-style: preserve-3d;
-    -webkit-transform: perspective(250px) rotateX(15deg);    
+    -webkit-transform: perspective(250px) rotateX(25deg);    
     position: relative;
-    bottom: 125px;
+    bottom: 160px;
     justify-content: center;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   }
   
   .note {
     position: absolute;
-    width: 50px;
-    height: 40px;
+    width: 13%;
+    height: 6%;
     border-radius: 50%;
     text-align: center;
     line-height: 60px;
@@ -501,6 +525,7 @@ background: linear-gradient(0deg, rgba(92,84,84,1) 0%, rgba(152,150,150,1) 100%)
   }
 
   .notepath{
+    position: relative;
     background-color: transparent; 
     width: max-content; 
     height: 100%;
@@ -571,7 +596,8 @@ background: linear-gradient(0deg, rgba(92,84,84,1) 0%, rgba(152,150,150,1) 100%)
     color: yellow;
     font-size: 35px;;
     font-weight: normal;
-    top: 50px;
+    z-index: 100;
+    top: 150px;
     -webkit-text-stroke-width: 2px; /* largura da borda */
     -webkit-text-stroke-color: gold;
     filter: drop-shadow(2px 7px goldenrod);
@@ -583,16 +609,83 @@ background: linear-gradient(0deg, rgba(92,84,84,1) 0%, rgba(152,150,150,1) 100%)
 }
 
 .titlestats, p{
-  color: white;
+  color: darkslategray;
   margin: 10px;
 }
 
 .wrapstats{
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  padding: 10px 30px;
-  background-color: antiquewhite;
+  transform: translate(-50%, -50%);
+  margin: 30px auto;
 }
+
+.wrappall{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 40px;
+}
+
+.piano-key {
+  position: relative;
+  display: inline-block;
+  margin: 20px;
+}
+
+.white-key {
+  width: 180px;
+  height: 60px;
+  background: linear-gradient(to right, #ffffff, #eeeeee);
+  border: 4px solid #000;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  box-shadow: 0 6px #555;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.white-key:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px #555;
+}
+
+#canvas3d .spline-watermark{
+  display: none !important;
+}
+
+.balloon-button {
+    margin: 20px;
+      background: linear-gradient(to top, #ff009d, #ff9999);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      width: 120px;
+      height: 150px;
+      position: relative;
+      color: white;
+      font-family: "Patrick Hand", cursive;
+      font-weight: bold;
+      font-size:26px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      padding:20px;
+    }
+
+    .balloon-button:hover {
+        transform: scale(1.1);
+    }
+
+    .balloon-button::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 20px;
+      background: #ff009d;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
 </style>
   

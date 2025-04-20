@@ -14,14 +14,15 @@
         position:absolute;
         display: flex;
         flex-direction: row-reverse;
-        padding: 20px 110px;
+        padding: 20px 20px;
         right: 0;
         z-index: 100;
+        top: -60px;
     }
 
     h2, h3{
         font-family: 'cookie';
-        font-size: 100px;
+        font-size: 80px;
         color: white;
         margin: 0;
         -webkit-text-stroke-width: 2px; /* largura da borda */
@@ -44,7 +45,7 @@
     }
     h3{
         position: fixed;
-        top:100px;
+        top:25px;
         filter: drop-shadow(2px 7px #4ef3d3);
         -webkit-text-stroke-color: #4cd8bc;
     }

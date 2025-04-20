@@ -10,6 +10,7 @@ const url = window.location.pathname;
 const iframeLoaded = ref(false);
 const startIrisOut = ref(false);
 
+
 const onIframeLoad = () => {
   
   setTimeout(() => {
@@ -38,12 +39,12 @@ const onIframeLoad = () => {
   </header>
 
   <!-- Loader Cover -->
-  <div v-if="!iframeLoaded && url != '/one'" :class="['loader-cover', { 'iris-out': startIrisOut }]">
+  <div v-if="!iframeLoaded && url != '/one' && url != '/about'" :class="['loader-cover', { 'iris-out': startIrisOut }]">
     <div class="spinner"></div>
     <p v-if="!startIrisOut">Loading... Wait a sec</p>
   </div>
 
-  <iframe v-if="url != '/one'" id="cake" src='https://my.spline.design/cakeproduction-hGBj5X11umLdG6ufU34QDZ3Q/' frameborder='0' width='80%' height='100%' @load="onIframeLoad"></iframe>
+  <iframe v-if="url != '/one' && url != '/about'" id="cake" src='https://my.spline.design/cakeproductioncopy-RT4I1Pjhv0YF3Vm6VYdd9crh/' frameborder='0' width='100%' height='100%' style="display: flex;" @load="onIframeLoad"></iframe>
   <svg v-if="url != '/one'" preserveAspectRatio="xMidYMid slice" id="svg" viewBox="10 10 80 80">
   <defs>
   <pattern id="img1" patternUnits="userSpaceOnUse" width="100" height="100">

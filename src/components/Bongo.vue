@@ -2,7 +2,7 @@
     <body data-gr-c-s-loaded="true" id="body" style="background-color: transparent !important;">
 		<!-- okay I know I have really bad SVG skills -->
 		<svg version="1.1" id="final" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-			viewBox="0 0 675 502" style="enable-background:new 0 0 675 502;" xml:space="preserve" width="250px">
+			viewBox="0 0 675 502" style="enable-background:new 0 0 675 502;" xml:space="preserve" width="300px">
 			
 		<g id="keyboard">
 			<g>

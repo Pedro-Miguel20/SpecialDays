@@ -11,7 +11,7 @@ import Bongo from "./Bongo.vue";
       </div>
       
       <div v-if="gameStarted && endgame === false" class="allwrapper">
-      <Bongo style="top: -70px; position: relative;"></Bongo>
+      <Bongo></Bongo>
       <div id="game-container">
         <div class="notepath">
             <div class="hit-zone" id="a" style="background-color: lightgreen;"><img v-if="key['a']" src="../assets/thunder.gif" style="position: absolute;     z-index: 100;
@@ -36,7 +36,7 @@ import Bongo from "./Bongo.vue";
           :style="{ backgroundColor: note.color, left: note.position + 'px', top: note.top + 'px' }"
         ></div>
       </div>
-  
+      <Bongo></Bongo>
       <!--<div class="life-bar">
         <div class="life" :style="{ width: life + '%' }"></div>
       </div>-->
@@ -520,8 +520,9 @@ background: linear-gradient(0deg, rgba(92,84,84,1) 0%, rgba(152,150,150,1) 100%)
 
   .allwrapper{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: space-evenly;
   }
 
   .notepath{

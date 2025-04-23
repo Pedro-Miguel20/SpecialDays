@@ -522,7 +522,7 @@ background: linear-gradient(0deg, rgba(92,84,84,1) 0%, rgba(152,150,150,1) 100%)
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
+    gap: 150px;
   }
 
   .notepath{

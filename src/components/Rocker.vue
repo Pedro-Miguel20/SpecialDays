@@ -3,7 +3,8 @@ import Bongo from "./Bongo.vue";
 </script>
 
 <template>
-    
+
+    <span id="perfect" :class="{ 'pop-animation': perfect !== '' }">{{ perfect }}</span>
     <div>
       <div class="piano-key">
         <button v-if="!gameStarted && endgame === false" v-on:click="startGame" class="white-key">You Play</button>
@@ -35,7 +36,6 @@ import Bongo from "./Bongo.vue";
           :style="{ backgroundColor: note.color, left: note.position + 'px', top: note.top + 'px' }"
         ></div>
       </div>
-      <span id="perfect" :class="{ 'pop-animation': perfect !== '' }">{{ perfect }}</span>
       <img src="https://i.pinimg.com/originals/11/0e/7c/110e7c1e1c8c8953e787b56fdff866ed.gif" width="320px">
 
       <!--<div class="life-bar">
@@ -595,6 +595,7 @@ background: linear-gradient(0deg, rgba(92,84,84,1) 0%, rgba(152,150,150,1) 100%)
 #perfect{
     font-family: 'daydream';
     color: yellow;
+    top: 150px;
     position: absolute;
     font-size: 35px;;
     font-weight: normal;

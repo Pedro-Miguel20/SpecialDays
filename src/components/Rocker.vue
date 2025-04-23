@@ -595,6 +595,7 @@ background: linear-gradient(0deg, rgba(92,84,84,1) 0%, rgba(152,150,150,1) 100%)
 #perfect{
     font-family: 'daydream';
     color: yellow;
+    position: absolute;
     font-size: 35px;;
     font-weight: normal;
     z-index: 100;

@@ -35,7 +35,8 @@ import Bongo from "./Bongo.vue";
           :style="{ backgroundColor: note.color, left: note.position + 'px', top: note.top + 'px' }"
         ></div>
       </div>
-      <span id="perfect" :class="{ 'pop-animation': perfect !== '' }">{{ perfect }}</span>
+      <span id="perfect" :class="{ 'pop-animation': perfect !== '' }">{{ perfect }}</span> s
+      <img src="https://i.pinimg.com/originals/11/0e/7c/110e7c1e1c8c8953e787b56fdff866ed.gif">
 
       <!--<div class="life-bar">
         <div class="life" :style="{ width: life + '%' }"></div>

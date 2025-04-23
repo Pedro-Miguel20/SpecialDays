@@ -4,7 +4,6 @@ import Bongo from "./Bongo.vue";
 
 <template>
     
-    <span id="perfect" :class="{ 'pop-animation': perfect !== '' }">{{ perfect }}</span>
     <div>
       <div class="piano-key">
         <button v-if="!gameStarted && endgame === false" v-on:click="startGame" class="white-key">You Play</button>
@@ -36,7 +35,8 @@ import Bongo from "./Bongo.vue";
           :style="{ backgroundColor: note.color, left: note.position + 'px', top: note.top + 'px' }"
         ></div>
       </div>
-      <Bongo></Bongo>
+      <span id="perfect" :class="{ 'pop-animation': perfect !== '' }">{{ perfect }}</span>
+
       <!--<div class="life-bar">
         <div class="life" :style="{ width: life + '%' }"></div>
       </div>-->
